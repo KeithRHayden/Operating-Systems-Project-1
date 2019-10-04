@@ -25,7 +25,6 @@ void FCFS::test()
 		while (rear != 0 && arrival >=  expected) { //if the newNode's arrival occurs after current node's end
 			pop();			
 			if (rear != 0) expected = (tick + rear->next->remain);
-			cout << "\nWe are here" << endl;
 		}
 		if( rear != 0 ) rear->next->remain -= (arrival - tick);		
 		push(arrival, remain); 

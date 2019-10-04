@@ -2,16 +2,22 @@
 
 using namespace algorithms;
 
-RR::RR() : qlow(DEFAULT_LOW), qhigh(DEFAULT_HIGH), rear(0), tick(0), size(0), enQ(0) {
+RR::RR() : rear(0), tick(0), size(0), enQ(0), qCounter(0) {
 	cout << "--------------------------------------------------------------------------------\n\n";
 	cout << "Hello from the RR default constructor." << endl;
 	cout << "--------------------------------------------------------------------------------\n\n";
+	curQ = DEFAULT_LOW;
+	test();
+	curQ = DEFAULT_HIGH;
 	test();
 }
-RR::RR(double low, double high) : qlow(low), qhigh(high), rear(0), tick(0), size(0), enQ(0) {
+RR::RR(double low, double high) : rear(0), tick(0), size(0), enQ(0), qCounter(0) {
 	cout << "--------------------------------------------------------------------------------\n\n";
 	cout << "Hello from the RR param constructor." << endl;
 	cout << "--------------------------------------------------------------------------------\n\n";
+	curQ = low;
+	test();
+	curQ = high;
 	test();
 }
 
@@ -21,24 +27,30 @@ void RR::test()
 	double lastArrived = 0; //the last added node's arrival time
 	double arrival = 0; //tick time of arrival
 	double remain = getBurst(); //expected time to end
+	qCounter = curQ;
 	push(arrival, remain); //first node;
 	while (size < capacity) {
 		remain = getBurst(); //remaining time of node
 		arrival = getArrival() + lastArrived; //tick time of arrival
 		lastArrived = arrival;
-		double expected = (tick + rear->next->remain);
+		double expected = (qCounter < rear->next->remain) ? (tick + qCounter) : (tick + rear->next->remain);
 		while (rear != 0 && arrival >=  expected) { //if the newNode's arrival occurs after current node's end
-			pop();			
-			if (rear != 0) expected = (tick + rear->next->remain);
-			cout << "\nWe are here" << endl;
+			reduce(); //it will pop or just reduce the remaining time for the process
+			qCounter = curQ; //reset the counter, counter is necessary if an arrival happens in a middle of a turn
+			if (rear != 0) expected = (qCounter < rear->next->remain) ? (tick + qCounter) : (tick + rear->next->remain);
 		}
-		if( rear != 0 ) rear->next->remain -= (arrival - tick);		
+		if( rear != 0 ) {
+			rear->next->remain -= (arrival - tick);	
+			qCounter -=	(arrival - tick);
+		}
 		push(arrival, remain); 
 	}
 	while (rear != 0) {
-		pop();
+		reduce();
+		qCounter = curQ;
 	}
 	cout << "exiting tester" << endl;
+	clear();
 }
 
 void RR::push(double arrive, double left) {
@@ -86,4 +98,18 @@ void RR::pop() {
 	--enQ;
 	//insert table function to flag the node and snapshot
 	cout << "We are now exiting the pop" << endl;
+}
+
+void RR::reduce() {
+	if (qCounter >= rear->next->remain) pop();
+	else {
+		rear->next->remain -= qCounter;
+		tick += qCounter;
+		rear = rear->next;
+		//insert a context switch call from the table update
+	}
+}
+
+void RR::clear() {
+	tick = size = enQ = curQ = qCounter = 0;
 }
