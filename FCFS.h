@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Queue.h"
+#include "Table.h"
 
 namespace algorithms {
 	using namespace std;
@@ -12,15 +13,18 @@ namespace algorithms {
 		void test();
 
 	private:
-		const int capacity = testSize;
-
-		void push(double arrive, double left);
-		void pop();
 
 		Node* rear;
-		double tick; //time 1 tick is 1/10 of a milisec
+		double tick; 
 		int size; //total number of processes added to scheduler queue
+		int sizeDone;
 		int enQ; //currently in queue
+		int n;
+		Table table;
+
+		void push(double arrive, double bursts, double lastArrive);
+		void pop();
+		void clear();		
 
 	};
 }

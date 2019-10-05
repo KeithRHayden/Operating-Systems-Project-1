@@ -9,34 +9,21 @@ using namespace std;
 
 namespace algorithms {
 	struct Node {
-			int index;
+			double arr;
 			double exit;
 			double remain;
+			double waitTime;
+			double change;
 			Node *next;
 		};
-	//class Queue {
-		
-	//public:
-		
-		
-		//Node *rear;
 
-		Node* createTask();
-		int getTestSize();
-		double getArrival();
+		Node* createTask(double lastExit, double remaining);
+		void pushNode(Node*& rearPtr, double lastExit, double remaining);
+		void removeNode(Node*& rearPtr);
+		double getArrival(int k);
 		double getBurst();
-		//double getArrivalStart();
-		//double getBurstStart();
-
-	//private:					
-		const double aStarter = (10000 * (1 / 30));
-		const double bStarter = (10000 * (1 / 25));
-		const int aRange = int(10000 - aStarter);
-		const int bRange = int(10000 - bStarter);
-		const int testSize = 5;
-
-
-	//};
+		const int testSize = 10000;	
+		const int numNs = 30;	
 		
 		
 }

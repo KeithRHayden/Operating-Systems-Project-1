@@ -1,4 +1,3 @@
-
 #include "Controller.h"
 
 Controller::Controller()
@@ -65,15 +64,15 @@ char Controller::getInput()
 	return command;
 }
 
-double Controller::getQuantum() {
-	double result;
+float Controller::getQuantum() {
+	float result;
 	cin >> result;
 	while (!cin.good())
 	{
-		cerr << "Bad double input..." << endl;
+		cerr << "Bad float input..." << endl;
 		cin.clear();
 		cin.ignore(999, '\n');
-		cout << "Re-enter a double: ";
+		cout << "Re-enter a float: ";
 		cin >> result;
 	}
 	cin.ignore(999, '\n');

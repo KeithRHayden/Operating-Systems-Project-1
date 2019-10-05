@@ -3,6 +3,7 @@
 #define CONTROLLER_H
 
 #include <iostream>
+#include <string>
 #include "FCFS.h"
 #include "SRT.h"
 #include "RR.h"
@@ -19,11 +20,11 @@ private:
 	
 	void printMenu();
 	char getInput();
-	double getQuantum();
+	float getQuantum();
 
 	char choice;
-	double lowChoice;
-	double highChoice;
+	float lowChoice;
+	float highChoice;
 
 };
 

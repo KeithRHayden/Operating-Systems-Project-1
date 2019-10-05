@@ -2,96 +2,84 @@
 
 using namespace algorithms;
 
-SRT::SRT() : rear(0), tick(0), size(0), enQ(0)  {
-	cout << "--------------------------------------------------------------------------------\n\n";
-	cout << "Hello from the SRT." << endl;
-	cout << "--------------------------------------------------------------------------------\n\n";
-	test();
+
+SRT::SRT() : rear(0), tick(0), size(0), enQ(0), sizeDone(0), n(0)  {
+	
+	table.create();
+	for(int i = 0; i < numNs; i++ ) {
+		n = i + 1;
+		table.newN(n);
+		test();		
+	}
 }
 
-void SRT::test()
-{
-	cout << "Hello from the tester\n";
+void SRT::test() {
+
 	double lastArrived = 0; //the last added node's arrival time
 	double arrival = 0; //tick time of arrival
 	double remain = getBurst(); //expected time to end
-	insert(arrival, remain); //first node;
-	while (size < capacity) {
-		remain = getBurst(); //remaining time of node
-		arrival = getArrival() + lastArrived; //tick time of arrival
+	insert(arrival, remain, lastArrived); //first node;
+	while (sizeDone < testSize) {
+		remain = getBurst(); 
+		arrival = getArrival(n) + lastArrived; 
 		lastArrived = arrival;
-		double expected = (tick + rear->next->remain);
+		double expected = (tick + rear->next->remain);		
 		while (rear != 0 && arrival >=  expected) { //if the newNode's arrival occurs after current node's end			
 			pop();
 			if (rear != 0) expected = (tick + rear->next->remain);
 		}
 		if(rear != 0) rear->next->remain -= (arrival - tick);
-		insert(arrival, remain);		 
+		insert(arrival, remain, lastArrived);
 	}
-	while (rear != 0) {
-		pop();
-	}
+	while (rear != 0) pop();	
+	clear();
 }
 
-void SRT::insert(double arrive, double left) {
-	cout << "This is the push and the node that is added is ";
-	Node *newNode = new Node;
-	newNode->index = size;
-	cout << "the index " << newNode->index;
-	newNode->exit = arrive;
-	cout << " the arrival time " << newNode->exit;
-	newNode->remain = left;
-	cout << " and the remaining time " << newNode->remain;
+void SRT::insert(double arrive, double left, double lastArrive) {
+	
+	Node *newNode = createTask(arrive, left);
+	table.addNew(rear->arr, rear->remain, lastArrive);
 	if (rear == 0 ) {
 		rear = newNode;
 		rear->next = rear;		
 	}
 	else {		
 		if(left >= rear->remain || left < rear->next->remain) {
+
 			if(left < rear->next->remain) {
-				//update the node, it was kicked out of execution
-				//and the wait time prior to current execution is added
+				++rear->next->change;
 				rear->next->exit = arrive;
 			}			
 			newNode->next = rear->next;
-			rear->next = newNode;			
+			rear->next = newNode;	
 			if(left >= rear->remain) {
 				rear = newNode;
 			}			
 		}
 		else {
 			Node *pre = rear->next;
-			while(pre != rear) { //already checked at tail ends
+			while(pre != rear) { 
 				if(pre->next->remain > left) {
 					newNode->next = pre->next;
 					pre->next = newNode;
 				}
-			}
-			
+			}			
 		}		
-	}	
+	}
 	tick = arrive;
+	++size;
 	++enQ;
-	++size; //This is the number of processes already added
-	//insert table function to track the node and snapshot	
 }
+
 void SRT::pop() {
-	cout << "Inside pop, and we are popping the headnode" << endl;	
-	if(rear == 0) { return; } //empty queue
-	cout << "It has the index " << rear->next->index << " it arrived at " << rear->next->exit;
-	tick = tick + rear->next->remain;
-	rear->next->remain = 0;
-	cout << " and it has " << rear->next->remain << " ticks left" << endl;
-	if(rear->next == rear) { //only one in the queue
-		rear->next = 0;
-		delete rear;
-		rear = 0;
-	}
-	else {
-		Node *cur = rear->next;
-		rear->next = cur->next;
-		delete cur;
-	}
-	--enQ;
-	//insert table function to flag the node and snapshot
+
+	rear->next->exit = double(tick + rear->remain);
+	++rear->change;
+	table.endNew(rear->arr, rear->exit, rear->waitTime, rear->change, --enQ);
+	tick += rear->remain;
+	removeNode(rear);
+	if (rear != 0) rear->next->waitTime += (tick - rear->next->exit);
+	++sizeDone;	
 }
+
+void SRT::clear() { tick = size = sizeDone = enQ = 0; }
