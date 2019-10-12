@@ -30,45 +30,69 @@ void Table::newN(int n) {
 
 void Table::addNew(double timeIn, double burst, double lastArrive) {
 
-	//double test0 = timeIn - lastArrive;
-	//double test1 = (timeIn - lastArrive);
-	//double test2 = 0;
-	//double test3 = nums[curX][5] + test0;
-	//double test4 = (nums[curX][5] + test0);
-	//double test5 = nums[curX][5] + test1;
-	//double test6 = (nums[curX][5] + test1);= (nums[curX][5] + timeIn - lastArrive)
-	//cout << test0 << ", " << test1 << ", " << test2 << ", " << test3 << ", " << test4 << ", " << test5 << ", " << test6 << endl;
-	nums[curX][0] = nums[curX][0] + 1;
-	nums[curX][5] = 100;
-	cout << nums[curX][5] << endl;
-	nums[curX][6] = nums[curX][6] + burst;
-	nums[curX][7] = double(nums[curX][6]/nums[curX][0]);
+	double helper = nums[curX][0];
+	helper += 1;
+	nums[curX][0] = (double)(helper);
+	helper = nums[curX][5];
+	helper += (timeIn - lastArrive);
+	nums[curX][5] = helper;
+	helper = nums[curX][6];
+	helper += burst;
+	nums[curX][6] = helper;
+	helper = nums[curX][6];
+	double helper2 = nums[curX][0];
+	nums[curX][7] = double(helper/helper2);
 	lastArrive = timeIn;
 }
 
 void Table::endNew(double arrTime, double exitTime, double waitTimes, double changes, int inQ){
 
-	nums[curX][10] = nums[curX][10] + 1;
+	double helper, helper2;
+	helper = nums[curX][10];
+	helper += 1;
+	nums[curX][10] = helper;
 	nums[curX][1] = exitTime;
-	nums[curX][2] = double(nums[curX][1]/nums[curX][10]);
+	helper = nums[curX][1];
+	helper2 = nums[curX][10];
+	nums[curX][2] = double(helper/helper2);
 	double tAround = double(exitTime - arrTime);
-	nums[curX][8] = nums[curX][8] + tAround;
-	if(tAround > nums[curX][3]) nums[curX][3] = tAround;
-	if(tAround < nums[curX][4]) nums[curX][4] = tAround;
-	nums[curX][9] = double(nums[curX][8] / nums[curX][10]);
-	if(inQ > nums[curX][11]) nums[curX][11] = inQ;
-	if(inQ < nums[curX][12]) nums[curX][12] = inQ;
-	nums[curX][13] = nums[curX][13] + inQ;
-	nums[curX][14] = double(nums[curX][13]/nums[curX][10]);
-	if(changes > nums[curX][15]) nums[curX][15] = changes;
-	if(changes < nums[curX][16]) nums[curX][16] = changes;
-	nums[curX][17] = nums[curX][17] + changes;
-	nums[curX][18] = double(nums[curX][17]/nums[curX][10]);
-	nums[curX][21] = nums[curX][21] + waitTimes;
-	if(waitTimes > nums[curX][19]) nums[curX][19] = waitTimes;
-	if(waitTimes < nums[curX][20]) nums[curX][20] = waitTimes;
-	nums[curX][22] = double(nums[curX][21] / nums[curX][10]);
-	nums[curX][23] = double(nums[curX][22] + nums[curX][7]);
+	helper = nums[curX][8];
+	nums[curX][8] = helper + tAround;
+	helper = nums[curX][3];
+	helper = nums[curX][4];
+	if(tAround > helper) nums[curX][3] = tAround;
+	if(tAround < helper2) nums[curX][4] = tAround;
+	helper = nums[curX][8];
+	helper2 = nums[curX][10];
+	nums[curX][9] = double( helper / helper2 );
+	helper = nums[curX][11];
+	helper2 = nums[curX][12];
+	if(inQ > helper) nums[curX][11] = inQ;
+	if(inQ < helper2) nums[curX][12] = inQ;
+	helper = nums[curX][13];
+	helper2 = nums[curX][10];
+	nums[curX][13] = helper + inQ;
+	nums[curX][14] = double(helper/ helper2);
+	helper = nums[curX][15];
+	helper2 = nums[curX][16];
+	if(changes > helper) nums[curX][15] = changes;
+	if(changes < helper2) nums[curX][16] = changes;
+	helper = nums[curX][17];
+	helper2 = nums[curX][10];
+	nums[curX][17] = helper + changes;
+	nums[curX][18] = double(helper/helper2);
+	helper = nums[curX][21];
+	nums[curX][21] = helper + waitTimes;
+	helper = nums[curX][19];
+	helper2 = nums[curX][20];
+	if(waitTimes > helper) nums[curX][19] = waitTimes;
+	if(waitTimes < helper2) nums[curX][20] = waitTimes;
+	helper = nums[curX][21];
+	helper2 = nums[curX][10];
+	nums[curX][22] = double( helper/helper2 );
+	helper = nums[curX][22];
+	helper2 = nums[curX][7];
+	nums[curX][23] = double( helper + helper2 );
 }
 
 void Table::print() {
