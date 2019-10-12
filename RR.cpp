@@ -52,7 +52,8 @@ void RR::test() {
 		remain = getBurst(); 
 		arrival = getArrival(n) + lastArrived;
 		lastArrived = arrival;
-		double expected = (qCounter < rear->next->remain) ? (tick + qCounter) : (tick + rear->next->remain);
+		double expected = 0;
+		expected = (qCounter < rear->next->remain) ? (tick + qCounter) : (tick + rear->next->remain);
 		while (rear != 0 && arrival >=  expected) {
 			reduce(); 
 			qCounter = curQ; 
@@ -82,14 +83,16 @@ void RR::push(double arrive, double left, double lastArrive) {
 
 void RR::pop() {
 		
+	if( rear != 0) {
+		rear->next->exit = double(tick + rear->remain);
+		++rear->change;
+		table.endNew(rear->arr, rear->exit, rear->waitTime, rear->change, --enQ);
+		tick += rear->remain;
+		removeNode(rear);
+		if(rear != 0) rear->next->waitTime += (tick - rear->next->exit);
+		++sizeDone;	
+	}
 	
-	rear->next->exit = double(tick + rear->remain);
-	++rear->change;
-	table.endNew(rear->arr, rear->exit, rear->waitTime, rear->change, --enQ);
-	tick += rear->remain;
-	removeNode(rear);
-	if(rear != 0) rear->next->waitTime += (tick - rear->next->exit);
-	++sizeDone;	
 }
 
 void RR::reduce() {

@@ -23,7 +23,8 @@ void SRT::test() {
 		remain = getBurst(); 
 		arrival = getArrival(n) + lastArrived; 
 		lastArrived = arrival;
-		double expected = (tick + rear->next->remain);		
+		double expected = 0;
+		if (rear != 0) expected = (tick + rear->next->remain);		
 		while (rear != 0 && arrival >=  expected) { //if the newNode's arrival occurs after current node's end			
 			pop();
 			if (rear != 0) expected = (tick + rear->next->remain);
@@ -38,7 +39,7 @@ void SRT::test() {
 void SRT::insert(double arrive, double left, double lastArrive) {
 	
 	Node *newNode = createTask(arrive, left);
-	table.addNew(rear->arr, rear->remain, lastArrive);
+	table.addNew(newNode->arr, newNode->remain, lastArrive);
 	if (rear == 0 ) {
 		rear = newNode;
 		rear->next = rear;		
@@ -73,13 +74,15 @@ void SRT::insert(double arrive, double left, double lastArrive) {
 
 void SRT::pop() {
 
-	rear->next->exit = double(tick + rear->remain);
-	++rear->change;
-	table.endNew(rear->arr, rear->exit, rear->waitTime, rear->change, --enQ);
-	tick += rear->remain;
-	removeNode(rear);
-	if (rear != 0) rear->next->waitTime += (tick - rear->next->exit);
-	++sizeDone;	
+	if( rear != 0) {
+		rear->next->exit = double(tick + rear->remain);
+		++rear->change;
+		table.endNew(rear->arr, rear->exit, rear->waitTime, rear->change, --enQ);
+		tick += rear->remain;
+		removeNode(rear);
+		if (rear != 0) rear->next->waitTime += (tick - rear->next->exit);
+		++sizeDone;	
+	}	
 }
 
 void SRT::clear() { tick = size = sizeDone = enQ = 0; }

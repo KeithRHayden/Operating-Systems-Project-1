@@ -6,7 +6,6 @@ FCFS::FCFS() : rear(0), tick(0), size(0), sizeDone(0), enQ(0) {
 
 	table.create();
 	for(int i = 0; i < numNs; ++i ) {
-		cout << "This is " << i << " out of " << numNs << endl;
 		n = 1 + i;
 		table.newN(n);
 		test();	

@@ -47,15 +47,15 @@ namespace algorithms {
 		}
 	}
 
-	double getArrival(int k) { 
-		double arrive = double(double(1)/k);
-		return arrive; 
+	double genexp(double k) {
+		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+		default_random_engine newDouble(seed);
+		poisson_distribution<int> exp (double(100000/k));
+		return(double(exp(newDouble) / 100000)); 
 	}
 
-	double getBurst() { 
-		srand(time(0));
-		double burst = double(double(rand() % 100 + 20)/1000);
-		return burst;
-	}
+	double getArrival(int k) { return genexp(k); }
+
+	double getBurst() { return genexp(double(1/0.06)); }
 
 }
