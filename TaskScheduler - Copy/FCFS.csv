@@ -1,0 +1,2 @@
+num pushes,num pops,time,wait,switches,arrival periods,total burst periods,num in ready queue,min wait,max wait,min exe time,max exe time,switches,max switches,avg throughput,avg sec/process,avg wait,average switches,average arrival,average burst,average in ready,min in ready,max in ready,lambda
+0.0,5.0,4.368418538463501,0.0,0.0,4.3046989258478705,4.368418538463501,15.0,0.0,0.0,0.05487789426159056,0.06728880913873292,0.0,0.0,1.1445789719953539,0.8736837076927001,0.0,0.0,0.8609397851695741,0.8736837076927001,3.0,5.0,1.0,2.0,
